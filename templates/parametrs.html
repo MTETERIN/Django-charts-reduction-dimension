@@ -1,0 +1,47 @@
+ {% extends 'base.html' %} {% block content %}
+
+<form method="GET" action="{% url 'boosting' %}" >
+    <section>
+        <h4>Choose technological parameters: </h3>
+        <select id="myselect" name="groups[]" multiple size="8" class="">
+            <option value="50">Power consumption on the meter №1 </option>
+            <option value="51">Power consumption on the meter №2 </option>
+            <option value="102">Melt pressure in extruder B</option>
+            <option value="138">Melt pressure in extruder С</option>
+            <option value="145">Melt temperature of extruder C</option>
+            <option value="151">Melt temperature of zone №4 of extruder C(ExtC_IST_Temp_Zone4)</option>
+            <option value="170">Weight of the composition</option>
+            <option value="203">Preliminary property </option>
+        </select>
+        {% comment %} (Energieverbr._Auftr._Zaehler1) 
+        (Energieverbr._Auftr._Zaehler2)  
+        (ExtB_Ist_Massedruck)  
+        (ExtC_Ist_Massedruck) 
+        (ExtC_IST_Temp_Massetemperatur_vor_Sieb)
+        (IST_Gewicht_Komp3) 
+        (Vorabzug_Zugist){% endcomment %}
+        <h4>Defect type:</h3>
+        <select name="defect[]" class="">
+            <option value="318">Stippe_-3000</option>
+            <option value="321">Stippe_-5000</option>
+            <option value="326">Unbekannt_-10000</option>
+            <option value="291">Stippe mit Hof_-5000</option>
+            <option value="277">Schwere VU/FK_-18000</option>
+        </select>
+        <h4> Choose an algorithm:</h3>
+        <select name="algorithm" class="">
+            <option value="1">t-sne</option>
+            <option value="2">Gradient Tree Boothing</option>
+        </select>
+        <div class="card-action ">
+            <button id="getValue" class="send view-center" type="submit" name="action">PLOT
+                
+            </button>
+        </div>
+
+    </section>
+</form>
+
+
+
+{% endblock content %}

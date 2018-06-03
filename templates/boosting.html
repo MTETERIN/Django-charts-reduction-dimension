@@ -1,0 +1,111 @@
+{% extends 'base.html' %} {% load staticfiles %}
+
+
+    {% block jquery %}
+    <script>
+    var endpoint = 'api/boosting/data';
+    var defaultData = [];
+    var labels = [];
+    var colors = [];
+    for(var i=0;i<arr.length;i++){
+        $('.info').append(parameters[arr[i]]+', ');
+    }
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        
+        success: function (data) {
+            
+            labels = data.labels
+            defaultData = data.prediction
+            realData = data.real
+            colors = data.color
+            $("#preloader").remove()
+            setChart()
+            
+        },
+        error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+    function setChart() {
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                ticks: {
+                    autoSkip: false
+                },
+                datasets: [
+                    {
+                        label: ['Predicted value of black dots'],
+                        data: defaultData,
+                        backgroundColor: [
+                            'rgba(0,0,255,0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0,0,255,0.7)'
+                        ],
+                        fill: false,
+                        borderWidth: 1
+                    }, {
+                        label: ['The real value of the black dots'],
+                        data: realData,
+                        backgroundColor: [
+                            'rgba(255,0,0,0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255,0,0,0.7)'
+                        ],
+                        fill: false,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Black dots',
+                            fontSize: 14
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time',
+                            fontSize: 14
+                        }
+                    }]
+                }
+            }
+        });
+    }
+    </script>
+    {% endblock %}
+ 
+{% block content %}
+<script>
+    var groups='{{groups}}'.replace(/&#39;/g,'');
+    var arr=JSON.parse(groups);
+
+   
+</script>
+
+<span class="card-title">Gradient Tree Boothing</span>
+<div url-endpoint='{% url "api-data" %}' class='info'>Parameters Used: </div>
+
+<div class="valign-wrapper" id="preloader">
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+</div>
+<canvas id="myChart"></canvas>
+
+
+
+
+{% endblock content %}
