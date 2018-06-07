@@ -1,18 +1,21 @@
+import datetime
 import sqlite3 as lite
+
 import numpy as np
 import pandas as pd
-import datetime
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
+
 
 def tsne(self):
     con = lite.connect('test.db', isolation_level='DEFERRED')
     parameters_tech = ['date']
     with con:
         cur = con.cursor()
-        list_tech_id = [50, 51, 102, 138, 145, 151, 170, 203, 318];
-        questionmarks = '?' * len(list_tech_id);
-        query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(','.join(questionmarks))
+        list_tech_id = [50, 51, 102, 138, 145, 151, 170, 203, 318]
+        questionmarks = '?' * len(list_tech_id)
+        query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(
+            ','.join(questionmarks))
         query_args = list_tech_id
         cur.execute(query, query_args)
         rows = cur.fetchall()  # извлечь данные
@@ -33,10 +36,11 @@ def tsne(self):
                 row_id) + ' THEN MEASUREMENTS.value ELSE NULL END)'
     query += 'FROM measurements WHERE datetime(date) < datetime(?) group by date'
     # print(query)
-    cur.execute(query, (a,));
+    cur.execute(query, (a,))
     df_query = pd.DataFrame.from_records(data=cur.fetchall(),
                                          columns=parameters_tech)  # перевод в матричный вид для pandas
-    df_query.dropna(axis=0, inplace=True)  # для обработки нулевых значений, удаление строк
+    # для обработки нулевых значений, удаление строк
+    df_query.dropna(axis=0, inplace=True)
 
     sc = MinMaxScaler(feature_range=(0, 1))
     df_data = df_query.drop(['Stippe_-3000', 'date'], axis=1)
@@ -55,4 +59,3 @@ def classifyQualityValue(self, x):
         return 0
     else:
         return 1
-

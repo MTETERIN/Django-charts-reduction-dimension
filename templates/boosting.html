@@ -1,28 +1,25 @@
-{% extends 'base.html' %} {% load staticfiles %}
-
-
-    {% block jquery %}
-    <script>
+{% extends 'base.html' %} {% load staticfiles %} {% block jquery %}
+<script>
     var endpoint = 'api/boosting/data';
     var defaultData = [];
     var labels = [];
     var colors = [];
-    for(var i=0;i<arr.length;i++){
-        $('.info').append(parameters[arr[i]]+', ');
+    for (var i = 0; i < arr.length; i++) {
+        $('.info').append(parameters[arr[i]] + ', ');
     }
     $.ajax({
         method: "GET",
         url: endpoint,
-        
+
         success: function (data) {
-            
+
             labels = data.labels
             defaultData = data.prediction
             realData = data.real
             colors = data.color
             $("#preloader").remove()
             setChart()
-            
+
         },
         error: function (error_data) {
             console.log("error")
@@ -84,15 +81,12 @@
             }
         });
     }
-    </script>
-    {% endblock %}
- 
-{% block content %}
+</script> {% endblock %} {% block content %}
 <script>
-    var groups='{{groups}}'.replace(/&#39;/g,'');
-    var arr=JSON.parse(groups);
+    var groups = '{{groups}}'.replace(/&#39;/g, '');
+    var arr = JSON.parse(groups);
 
-   
+
 </script>
 
 <span class="card-title">Gradient Tree Boothing</span>

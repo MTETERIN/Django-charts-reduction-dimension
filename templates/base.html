@@ -30,9 +30,6 @@
 					</a>
 				</li>
 			</ul>
-
-
-
 	</nav>
 	<ul id="slide-out" class="sidenav">
 		<li>
@@ -59,20 +56,17 @@
 			<div class="divider"></div>
 		</li>
 		<li>
-
 			<p>
 				<li>
-					<a href="/stat" class="modal-trigger" onclick="$('.button-collapse').sideNav('hide');">
-						<i class="material-icons">graphic_eq</i>Data Mining Graphs</a>
+					<a href="{% url 'stat' %}" class="modal-trigger" onclick="$('.button-collapse').sideNav('hide');">
+						<i class="material-icons">graphic_eq</i>Data Graphs</a>
 				</li>
-
 			</p>
 			<p>
 				<li>
-					<a href="/" class="modal-trigger" onclick="$('.button-collapse').sideNav('hide');">
-						<i class="material-icons">trending_up</i>Gradient Boosting</a>
+					<a href="{% url 'tsne' %}" class="modal-trigger" onclick="$('.button-collapse').sideNav('hide');">
+						<i class="material-icons">trending_up</i>Data Mining Methods</a>
 				</li>
-
 			</p>
 			<p>
 				<li>
@@ -81,6 +75,13 @@
 				</li>
 
 			</p>
+			<li>
+				<a class="subheader">System managment</a>
+			</li>
+
+			<li>
+				<div class="divider"></div>
+			</li>
 			<p>
 				<li>
 					<a href="#modal1" class="modal-trigger" onclick="$('.button-collapse').sideNav('hide');">
@@ -88,14 +89,28 @@
 				</li>
 
 			</p>
-
 			<p>
 				<li>
-					<a href="#!">
+					<a href="{% url 'manual' %}">
+						<i class="material-icons">help</i>Help</a>
+				</li>
+
+			</p>
+			<p>
+				<li>
+					<a href="{% url 'chart:feedback_form' %}">
+						<i class="material-icons">feedback</i>Feedback</a>
+				</li>
+
+			</p>
+			<p>
+				<li>
+					<a href="{% url 'admin:index' %}">
 						<i class="material-icons">settings</i>Settings</a>
 				</li>
 
 			</p>
+
 			<p>
 				<li>
 					<a href="{% url 'logout' %}">
@@ -151,6 +166,7 @@
 						<div class="card ">
 							<div class="card-content">
 								{% if user.is_authenticated %} {% block content %} {% endblock %} {% else %}
+
 								<div class="view-center">
 									<h4>Welcome to the Data Mining System. Please, Log in to continue. </h4>
 									<a class="waves-effect waves-light btn" href="{% url 'login' %}">
@@ -181,22 +197,15 @@
 	<!-- Scripts -->
 	<!--Import jQuery before materialize.js-->
 	{% include 'base/js.html' %}
-	<script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script> 
-	<script type="text/javascript" src="{% static 'js/utils.js' %}"></script> 
+	<script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/utils.js' %}"></script>
 	<script>
-			M.AutoInit(); 
-	</script>
-		{% block jquery %} {% endblock %}
-		{% block script %} {% endblock %}
-	 {% comment %}
-	 
-	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script> {% endcomment %}
-	
-	{% comment %}
+		M.AutoInit(); 
+	</script> {% block jquery %} {% endblock %} {% block script %} {% endblock %} {% comment %}
+
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script> {% endcomment %} {% comment %}
 	<script type="text/javascript" src="{% static 'js/papaparse.min.js' %}"></script> {% endcomment %}
-	<script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-	
-	{% comment %}
+	<script type="text/javascript" src="{% static 'js/app.js' %}"></script> {% comment %}
 	<script type="text/javascript" src="{% static 'js/charts.js' %}"></script> {% endcomment %}
 </body>
 

@@ -1,18 +1,19 @@
+import datetime
+import pickle
+import sqlite3 as lite
+
+import numpy as np
+import pandas as pd
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import View
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-import sqlite3 as lite
-import pandas as pd
-import pickle
-import datetime
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
+
 import xgboost as xgb
-import numpy as np
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 User = get_user_model()
 
@@ -20,12 +21,24 @@ User = get_user_model()
 def get_data(request, *args, **kwargs):
     return render(request, 'parametrs.html')
 
+
+def manual(request, *args, **kwargs):
+    return render(request, 'manual.html')
+
+
+def main(request, *args, **kwargs):
+    return render(request, 'main.html')
+
+
 class StatCharView(View):
     def get(self, request, *args, **kwargs):
-            return render(request, 'stat-char.html')
+        return render(request, 'stat-char.html')
+
+
 class BarChartView(View):
     def get(self, request, *args, **kwargs):
-            return render(request, 'chartbar.html')
+        return render(request, 'chartbar.html')
+
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
@@ -38,7 +51,8 @@ class HomeView(View):
                 pickle.dump(defect_url, defe, protocol=pickle.HIGHEST_PROTOCOL)
             print(web_url)
             print(defect_url)
-        return render(request, 'charts.html', {"groups": web_url,"defect":defect_url})
+        return render(request, 'charts.html', {"groups": web_url, "defect": defect_url})
+
 
 class BoostingGradientView(View):
     def get(self, request, *args, **kwargs):
@@ -52,12 +66,10 @@ class BoostingGradientView(View):
                 pickle.dump(defect_url, defe, protocol=pickle.HIGHEST_PROTOCOL)
                 if (algorithm == '1'):
                     print('zz')
-                    return render(request, 'charts.html', {"groups": web_url,"defect":defect_url})
-                else :
+                    return render(request, 'charts.html', {"groups": web_url, "defect": defect_url})
+                else:
                     print('xx')
-                    return render(request, 'boosting.html', {"groups": web_url,"defect":defect_url})
-
-
+                    return render(request, 'boosting.html', {"groups": web_url, "defect": defect_url})
 
 
 class ChartData(APIView):
@@ -83,8 +95,9 @@ class ChartData(APIView):
             print(list_tech_id)
 
             #list_tech_id = [50, 51, 102, 138, 145, 151, 170, 203, 318];
-            questionmarks = '?' * len(list_tech_id);
-            query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(','.join(questionmarks))
+            questionmarks = '?' * len(list_tech_id)
+            query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(
+                ','.join(questionmarks))
             query_args = list_tech_id
             cur.execute(query, query_args)
             rows = cur.fetchall()  # извлечь данные
@@ -104,22 +117,25 @@ class ChartData(APIView):
                     row_id) + ' THEN MEASUREMENTS.value ELSE NULL END)'
         query += 'FROM measurements WHERE datetime(date) < datetime(?) group by date'
         # print(query)
-        cur.execute(query, (a,));
+        cur.execute(query, (a,))
         df_query = pd.DataFrame.from_records(data=cur.fetchall(),
                                              columns=parameters_tech)  # перевод в матричный вид для pandas
 
-        df_query.dropna(axis=0, inplace=True)  # для обработки нулевых значений, удаление строк
+        # для обработки нулевых значений, удаление строк
+        df_query.dropna(axis=0, inplace=True)
         print(df_query.columns)
         print(list_defects[0])
         with con:
             cur = con.cursor()
-            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(*list_defects)
-            cur.execute(queryName);
-            defectParameter = cur.fetchone()[0];
+            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(
+                *list_defects)
+            cur.execute(queryName)
+            defectParameter = cur.fetchone()[0]
         sc = MinMaxScaler(feature_range=(0, 1))
         df_data = df_query.drop([defectParameter, 'date'], axis=1)
         training_set_scaled_x = sc.fit_transform(df_data.values)
-        df_classify = df_query[defectParameter].apply(self.classifyQualityValue)
+        df_classify = df_query[defectParameter].apply(
+            self.classifyQualityValue)
         # print(df_classify)
         # threshhold = 45
         tsne = TSNE()
@@ -147,16 +163,16 @@ class ChartData(APIView):
         colors = []
 
         for i in classify:
-             if i == 0:
-                 colors.append("#8C7D7E") #черные
-             if i == 1:
-                 colors.append("#F34F4F") #красные - дефект
+            if i == 0:
+                colors.append("#8C7D7E")  # черные
+            if i == 1:
+                colors.append("#F34F4F")  # красные - дефект
 
         qs_count = User.objects.all().count()
 
         data = {
-                "default": datas,
-                "color": colors
+            "default": datas,
+            "color": colors
         }
         return Response(data)
 
@@ -184,8 +200,9 @@ class Boosting(APIView):
             print(list_tech_id)
 
             #list_tech_id = [50, 51, 102, 138, 145, 151, 170, 203, 318];
-            questionmarks = '?' * len(list_tech_id);
-            query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(','.join(questionmarks))
+            questionmarks = '?' * len(list_tech_id)
+            query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(
+                ','.join(questionmarks))
             query_args = list_tech_id
             cur.execute(query, query_args)
             rows = cur.fetchall()  # извлечь данные
@@ -205,24 +222,26 @@ class Boosting(APIView):
                     row_id) + ' THEN MEASUREMENTS.value ELSE NULL END)'
         query += 'FROM measurements WHERE datetime(date) < datetime(?) group by date'
         # print(query)
-        cur.execute(query, (a,));
+        cur.execute(query, (a,))
         df_query = pd.DataFrame.from_records(data=cur.fetchall(),
                                              columns=parameters_tech)  # перевод в матричный вид для pandas
 
-        df_query.dropna(axis=0, inplace=True)  # для обработки нулевых значений, удаление строк
+        # для обработки нулевых значений, удаление строк
+        df_query.dropna(axis=0, inplace=True)
         print(df_query.columns)
         print(list_defects[0])
         with con:
             cur = con.cursor()
-            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(*list_defects)
-            cur.execute(queryName);
-            defectParameter = cur.fetchone()[0];
+            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(
+                *list_defects)
+            cur.execute(queryName)
+            defectParameter = cur.fetchone()[0]
         sc = MinMaxScaler(feature_range=(0, 1))
         df_data = df_query.drop([defectParameter, 'date'], axis=1)
         xgb_model = xgb.XGBRegressor(max_depth=5, n_estimators=60)
-        xgb_model.fit(df_data.values,df_query[defectParameter].values )
+        xgb_model.fit(df_data.values, df_query[defectParameter].values)
         print("hi")
-        return xgb_model.predict(df_data.values),df_query[defectParameter].values
+        return xgb_model.predict(df_data.values), df_query[defectParameter].values
 
     def get(self, request, format=None):
 
@@ -231,7 +250,7 @@ class Boosting(APIView):
         real_data = []
         timeStamp = 0
         for i in predict_values:
-            timeStamp += 1;
+            timeStamp += 1
             point = {
                 'x': timeStamp,
                 'y': i,
@@ -241,11 +260,11 @@ class Boosting(APIView):
         colors = []
 
         for i in predict_values:
-             colors.append("#F34F4F") #красные - дефект
+            colors.append("#F34F4F")  # красные - дефект
 
         timeStamp = 0
         for i in real_values:
-            timeStamp += 1;
+            timeStamp += 1
             point = {
                 'x': timeStamp,
                 'y': i,
@@ -256,8 +275,8 @@ class Boosting(APIView):
         qs_count = User.objects.all().count()
 
         data = {
-                "prediction": datas,
-                "real": real_data,
-                "color": colors
+            "prediction": datas,
+            "real": real_data,
+            "color": colors
         }
         return Response(data)

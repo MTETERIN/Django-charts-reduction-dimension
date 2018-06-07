@@ -1,14 +1,11 @@
-{% extends 'base.html' %} {% load staticfiles %}
-
-
-    {% block jquery %}
-    <script>
+{% extends 'base.html' %} {% load staticfiles %} {% block jquery %}
+<script>
     var endpoint = '/api/chart/data/'
     var defaultData = []
     var labels = [];
     var colors = [];
-    for(var i=0;i<arr.length;i++){
-        $('.info').append(parameters[arr[i]]+', ');
+    for (var i = 0; i < arr.length; i++) {
+        $('.info').append(parameters[arr[i]] + ', ');
     }
 
     $.ajax({
@@ -69,13 +66,11 @@
             }
         });
     }
-</script>
-    {% endblock %}
-{% block content %}
+</script> {% endblock %} {% block content %}
 <script>
-    var groups='{{groups}}'.replace(/&#39;/g,'');
-    var arr=JSON.parse(groups);
-   
+    var groups = '{{groups}}'.replace(/&#39;/g, '');
+    var arr = JSON.parse(groups);
+
 </script>
 
 <span class="card-title">Visualization of production data using the t-SNE method</span>

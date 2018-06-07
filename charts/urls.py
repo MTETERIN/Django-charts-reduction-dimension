@@ -13,25 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url,include
 from django.contrib import admin
 from django.contrib.auth import views as authviews
 
-from .views import HomeView, get_data, ChartData, BoostingGradientView, Boosting,StatCharView,BarChartView
-
+from .views import (BarChartView, Boosting, BoostingGradientView, ChartData,
+                    HomeView, StatCharView, get_data,main,manual)
 
 urlpatterns = [
-    url(r'^$', get_data, ),
-    url(r'^api/chart/$', HomeView.as_view(),name='api-data'),
+    url(r'^$', main, ),
+    url(r'^tsne/$', get_data, name='tsne'),
+    url(r'^api/chart/$', HomeView.as_view(), name='api-data'),
     url(r'^api/chart/data/$', ChartData.as_view()),
     url(r'^api/boosting/data$', Boosting.as_view()),
-    url(r'^boosting$', BoostingGradientView.as_view(),name ='boosting'),
+    url(r'^boosting$', BoostingGradientView.as_view(), name='boosting'),
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', authviews.login, {'template_name': 'login.html'}, name='login'),
-    url(r'^logout/$', authviews.logout, {'template_name': 'logged_out.html'}, name='logout'),
-    url(r'^stat/$', StatCharView.as_view(),name ='stat' ),
-    url(r'^bar/$', BarChartView.as_view(),name ='bar' ),
-
+    url(r'^login/$', authviews.login,
+        {'template_name': 'login.html'}, name='login'),
+    url(r'^logout/$', authviews.logout,
+        {'template_name': 'logged_out.html'}, name='logout'),
+    url(r'^stat/$', StatCharView.as_view(), name='stat'),
+    url(r'^bar/$', BarChartView.as_view(), name='bar'),
+    url(r'^manual/$', manual, name='manual'),
+    url(r'^', include('chart.urls')),
 
 
 ]

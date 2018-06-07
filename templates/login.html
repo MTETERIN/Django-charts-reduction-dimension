@@ -1,5 +1,5 @@
-{% extends 'base_login.html' %} {% block title %}Login{% endblock %} {% block content %}
-{% comment %} <h2>Login</h2>
+{% extends 'base_login.html' %} {% block title %}Login{% endblock %} {% block content %} {% comment %}
+<h2>Login</h2>
 <form method="post">
   {% csrf_token %} {{ form.as_p }}
   <button class="btn waves-effect waves-light" type="submit" name="action">Login
@@ -10,14 +10,14 @@
 <div class="col s12 m6 offset-m3">
   <div class="card login-wrapper">
     <div class="card-content">
-        <span class="card-title">Welcome!</span>
+      <span class="card-title">Welcome!</span>
       <div id="UserLoginForm">
-          <form method="post">
-              {% csrf_token %} {{ form.as_p }}
-              <button class="btn waves-effect waves-light view-center" type="submit" name="action">Login
-                <i class="material-icons right">send</i>
-              </button>
-            </form> 
+        <form method="post">
+          {% csrf_token %} {{ form.as_p }}
+          <button class="btn waves-effect waves-light view-center" type="submit" name="action">Login
+            <i class="material-icons right">send</i>
+          </button>
+        </form>
 
       </div>
 

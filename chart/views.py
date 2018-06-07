@@ -1,3 +1,19 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.shortcuts import render
+ 
+from .forms import FeedbackForm
+ 
+ 
+def feedback_form(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+ 
+        if form.is_valid():
+            form.save()
+            form = FeedbackForm()
+            return render(request, 'feedback_form.html', {'form': form})
+    else:
+        form = FeedbackForm()
+    return render(request, 'feedback_form.html', {'form': form})
