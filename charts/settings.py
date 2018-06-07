@@ -50,7 +50,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'charts.urls'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]  # для подключения js и css выпадающего меню
+# для подключения js и css выпадающего меню
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 
 TEMPLATES = [

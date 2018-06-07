@@ -18,8 +18,8 @@
 		<div class="nav-wrapper container">
 			<a id="logo-container" href="#" class="brand-logo center">
 				<i class="material-icons">cloud</i>Data Mining Alpha</a>
-				{% comment %}
-				<ul class="left">
+			{% comment %}
+			<ul class="left">
 				<li>
 					<a href="#" data-activates="slide-out" class="button-collapse  show-on-large ">
 						<i class="material-icons">menu</i>
@@ -28,7 +28,7 @@
 			</ul>
 
 
-			 <ul id="slide-out" class="side-nav">
+			<ul id="slide-out" class="side-nav">
 				<li>
 					<div class="userView">
 						<div class="background light-blue "> </div>
@@ -103,16 +103,11 @@
 					{% if user.is_authenticated %} Hi {{ user.username }}!
 					<a href="{% url 'logout' %}">logout</a>
 
-					{% else %}
+					{% else %} {% comment %}
+					<a class="waves-effect waves-light btn" href="{% url 'login' %}">
+						<i class="material-icons left">send</i>login</a> {% endcomment %} {% endif %} {% block content %} {% endblock %}
 
-					{% comment %} <a class="waves-effect waves-light btn" href="{% url 'login' %}">
-						<i class="material-icons left">send</i>login</a> {% endcomment %}
-					{% endif %}
 
-					{% block content %} 
-					{% endblock %}
-
-					
 
 				</div>
 

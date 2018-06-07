@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<h6 class='center'>Welcome to Data Mining System. Please choose the data, you want to analyze.</h6>
+<div class="row">
+    <div class="col s12 m4 l4 ">
+        <div class="card blue darken-2">
+            <div class="card-image">
+                <img src="{% static 'images/kpi.png' %}">
+                <span class="card-title">Technological Parameters</span>
+            </div>
+            <div class="card-content white-text">
+                Analyze such data as: number of orders, best materials and rezepturs.
+            </div>
+            <div class="card-action">
+                <a class="btn view-center" href="{% url 'stat' %}">Analyze</a>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m4 l4 ">
+        <div class="card indigo darken-2">
+            <div class="card-image">
+                <img src="{% static 'images/stat.png' %}">
+                <span class="card-title">Data Graphs</span>
+            </div>
+            <div class="card-content white-text">
+                Get basic information about parameters and defects ratio.
+            </div>
+            <div class="card-action">
+                <a class="btn view-center" href="{% url 'stat' %}">Analyze</a>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m4 l4 ">
+        <div class="card teal darken-2">
+            <div class="card-image">
+                <img src="{% static 'images/tsne.png' %}">
+                <span class="card-title">Data Mining Methods</span>
+            </div>
+            <div class="card-content white-text  ">
+                Get deep analysis of data using neural networks and data mining methods (t-sne, gradient boosting).
+            </div>
+            <div class="card-action">
+                <a class="btn view-center" href="{% url 'stat' %}">Analyze</a>
+            </div>
+        </div>
+    </div>
+</div> {% endblock content %}

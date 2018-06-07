@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<h4>Welcome to the data mining system. </h4>
+<p>This system was created in cooperation with
+    <b>Mondi Group</b> and
+    <b>Saint-Petersburg State Institute of Technology</b> to perform analysis of
+    <b>big industrial data.</b>
+</p>
+<img src="{% static 'images/mondi.png' %}" class="responsive-img"></img>
+<img src="{% static 'images/spbgti.png' %}" class="responsive-img"></img>
+
+<p>Right now the system has 3 main analytics modules:</p>
+<ul class="">
+    <li class="">-
+        <i class="material-icons">timeline</i>Tech params</li>
+    <li class="">-
+        <i class="material-icons">graphic_eq</i>Data graphs</li>
+    <li class="">-
+        <i class="material-icons">trending_up</i>Data Mining methods</li>
+</ul>
+<p> All you need, is to choose parameter(s) and defect type. </p>
+<p>After that just press
+    <b>plot</b> button and the system will give you graphs.</p>
+<p>The system is made with
+    <b>Django Framework</b> and
+    <b>Materialize framework</b> and using
+    <b>SQLite</b>to manage data.</p>
+
+<p>You can contact with administrator by choosing the
+    <i class="material-icons">feedback</i>"Feedback" button in the side menu.</p>
+{% endblock content %}
