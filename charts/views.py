@@ -34,10 +34,21 @@ class StatCharView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'stat-char.html')
 
+class PlotCharView(View):
+    def get(self, request, *args, **kwargs):
+        if request.method == "GET":
+            web_url = request.GET.get('group')
+            defect_url = request.GET.get('defect')
+            print(web_url)
+            with open('fileplots.pickle', 'wb') as handle:
+                pickle.dump(web_url, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            with open('defectplots.pickle', 'wb') as defe:
+                pickle.dump(defect_url, defe, protocol=pickle.HIGHEST_PROTOCOL)
+        return render(request, 'plot-char.html')
 
 class BarChartView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'chartbar.html')
+        def get(self, request, *args, **kwargs):
+            return render(request, 'chartbar.html')
 
 
 class HomeView(View):
@@ -71,6 +82,104 @@ class BoostingGradientView(View):
                     print('xx')
                     return render(request, 'boosting.html', {"groups": web_url, "defect": defect_url})
 
+
+class PlotData(APIView):
+    def plots(self):
+        print('Here:')
+        con = lite.connect('test.db', isolation_level='DEFERRED')
+        parameters_tech = ['date']
+        with con:
+            cur = con.cursor()
+            with open('fileplots.pickle', 'rb') as handle:
+                list_parameters = pickle.load(handle)
+            print(list_parameters)
+
+            with open('defectplots.pickle', 'rb') as defe:
+                list_defects = pickle.load(defe)
+            print(list_defects)
+            list = []
+            list.append(list_parameters)
+            list.append(list_defects)
+            #list_tech_id = [50, 51, 102, 138, 145, 151, 170, 203, 318];
+            questionmarks = '??'
+            query = 'SELECT * FROM PARAMETERS WHERE PARAMETERS.rowid IN ({})'.format(
+                ','.join(questionmarks))
+            query_args = list_parameters
+            print(query)
+            cur.execute(query, list);
+            rows = cur.fetchall()  # извлечь данные
+            for row in rows:
+                parameters_tech.append(row[0])
+
+        a = datetime.datetime(2015, 5, 17, 5, 0, 0)
+        cur = con.cursor()
+        query = ''
+        query += 'SELECT date, '
+        query += 'MAX(CASE MEASUREMENTS.parameter_id WHEN ' + str(
+                    list_parameters) + ' THEN MEASUREMENTS.value ELSE NULL END), '
+        query += 'MAX(CASE MEASUREMENTS.parameter_id WHEN ' + str(
+                    list_defects) + ' THEN MEASUREMENTS.value ELSE NULL END) '
+        query += 'FROM measurements WHERE datetime(date) < datetime(?) group by date'
+        print(query)
+        cur.execute(query, (a,))
+        df_query = pd.DataFrame.from_records(data=cur.fetchall(),
+                                             columns=parameters_tech)  # перевод в матричный вид для pandas
+
+        # для обработки нулевых значений, удаление строк
+        df_query.dropna(axis=0, inplace=True)
+        with con:
+            cur = con.cursor()
+            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(
+                list_parameters)
+            cur.execute(queryName)
+            techParameter = cur.fetchone()[0]
+        with con:
+            cur = con.cursor()
+            queryName = "SELECT PARAMETERS.parameter_name FROM PARAMETERS WHERE PARAMETERS.rowid = {}".format(
+                list_defects)
+            cur.execute(queryName)
+            defParameter = cur.fetchone()[0]
+        return df_query[techParameter].values, df_query[defParameter].values,techParameter,defParameter
+
+
+    def get(self, request, format=None):
+        predict_values, real_values,name1,name2 = self.plots()
+        datas = []
+        real_data = []
+        timeStamp = 0
+        for i in predict_values:
+            timeStamp += 1
+            point = {
+                'x': timeStamp,
+                'y': i,
+                'r': 3,
+            }
+            datas.append(point)
+        colors = []
+
+        for i in predict_values:
+            colors.append("#F34F4F")  # красные - дефект
+
+        timeStamp = 0
+        for i in real_values:
+            timeStamp += 1
+            point = {
+                'x': timeStamp,
+                'y': i,
+                'r': 3,
+            }
+            real_data.append(point)
+
+        qs_count = User.objects.all().count()
+
+        data = {
+            "prediction": datas,
+            "real": real_data,
+            "color": colors,
+            "name1":name1,
+            "name2":name2
+        }
+        return Response(data)
 
 class ChartData(APIView):
     authentication_classes = []

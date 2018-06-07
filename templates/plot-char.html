@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% load staticfiles %} {% block jquery %}
+<script>
+    var endpoint = 'api/plot/data';
+    var defaultData = [];
+    var labels = [];
+    var colors = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+
+        success: function (data) {
+
+            labels = data.labels
+            defaultData = data.prediction
+            realData = data.real
+            colors = data.color
+            name1 = data.name1
+            name2 = data.name2
+            $("#preloader").remove()
+            setChart()
+
+        },
+        error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+    function setChart() {
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                ticks: {
+                    autoSkip: false
+                },
+                datasets: [
+                    {
+                        label: name1,
+                        data: defaultData,
+                        backgroundColor: [
+                            'rgba(0,0,255,0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0,0,255,0.7)'
+                        ],
+                        fill: false,
+                        borderWidth: 1
+                    }, {
+                        label: name2,
+                        data: realData,
+                        backgroundColor: [
+                            'rgba(255,0,0,0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255,0,0,0.7)'
+                        ],
+                        fill: false,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Black dots',
+                            fontSize: 14
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time',
+                            fontSize: 14
+                        }
+                    }]
+                }
+            }
+        });
+    }
+</script> {% endblock %} {% block content %}
+<script>
+
+
+</script>
+
+<span class="card-title">Plost</span>
+<div url-endpoint='{% url "api-plot" %}' class='info'>Parameters Used: </div>
+
+<div class="valign-wrapper" id="preloader">
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+</div>
+<canvas id="myChart"></canvas>
+
+
+
+
+{% endblock content %}

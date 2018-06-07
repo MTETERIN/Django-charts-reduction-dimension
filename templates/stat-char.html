@@ -1,9 +1,9 @@
  {% extends 'base.html' %} {% block content %}
 
-<form method="GET" action="{% url 'stat' %}" id="form-stat">
+<form method="GET" action="{% url 'plots' %}" id="form-stat">
     <section>
         <h4>Choose technological parameters: </h3>
-            <select id="myselect" name="groups[]" multiple size="8" class="">
+            <select id="myselect" name="group"  size="8" class="">
                 <option value="50">Power consumption on the meter №1 </option>
                 <option value="51">Power consumption on the meter №2 </option>
                 <option value="102">Melt pressure in extruder B</option>
@@ -15,7 +15,7 @@
             </select>
 
             <h4>Defect type:</h3>
-                <select name="defect[]" class="">
+                <select name="defect" class="">
                     <option value="318">Stippe_-3000</option>
                     <option value="321">Stippe_-5000</option>
                     <option value="326">Unbekannt_-10000</option>
@@ -24,6 +24,7 @@
                 </select>
 
                 <div class="card-action ">
+
                     <button id="getValue" class="btn view-center" type="submit" name="action">Plot
 
                     </button>
@@ -32,32 +33,7 @@
     </section>
 </form>
 
-<div id="char" style="display:none">
-
-    <div class="preloader-wrapper big view-center active" style="display:none" id="progress">
-        <div class="spinner-layer spinner-green-only">
-            <div class="circle-clipper left">
-                <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-                <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-                <div class="circle"></div>
-            </div>
-        </div>
-    </div>
-    <div id='canvas-wrapper'>
-        <canvas id="myChart"></canvas>
-    </div>
-
-
-    <div class="card-action ">
-        <button id="back" class="btn view-center">Back
-
-        </button>
-    </div>
-</div>
+<
 
 
 
@@ -66,93 +42,8 @@
 <script>
     var myLineChart = null;
     var ctx = null;
-    var endpoint = '/api/chart/data/';
-    $('#form-stat').on('submit', function (event) {
-        event.preventDefault();
-        //$("#progress").slideToggle();
-        $('#form-stat').slideToggle();
-        $('#char').slideToggle();
-        $('#myChart').remove();
-        $("#canvas-wrapper").html("").html('<canvas id="myChart"></canvas>');
+    var endpoint = '/api/plot/data/';
 
-        function isMobileDevice() {
-            return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-        }
-
-        var config = {
-            type: 'line',
-
-            data: {
-                //тут лейблы
-                labels: ["39", "38", "43", "28", "31", "35", "23", "32", "41", "45", "44", "60", "48", "51", "60", "49", "52", "52", "51", "68", "56", "34", "39", "39", "35", "40", "40", "51", "45", "40", "44", "44", "40", "61", "33", "56", "37", "53"
-                ],
-                datasets: [
-                    {
-
-
-                        label: 'Dataset 1',
-                        borderColor: randomColor(),
-                        data: [
-                            8, 28, 28, 28, 28, 28, 28, 28, 28, 28, 0, 1, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 0, 0, 17, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28
-
-
-                        ],
-                    }
-                    /*
-                    {% for data,label,colors in set %}
-                    {
-                        label: "{{label}}",
-                        color : "{{colors}}",
-                        data: ["{{data}}"]
-                    },
-                    {% endfor %}*/
-                    /*{
-                        label: 'My First dataset',
-                        borderColor: randomColor(),
-                        
-                        data: [
-                            1,3,4,2,5,6,4,2,1,5
-                        ],	
-                    }*/
-                ]
-            },
-            options: {
-                responsive: true,
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                scales:
-                    {
-                        xAxes: [{
-                            ticks: {
-
-                                display: !isMobileDevice(),
-
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Weight of composition number 3',
-                                fontSize: 14
-                            }
-
-                        }],
-                        yAxes: [{
-                            ticks: {
-
-                                display: !isMobileDevice()
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Black dots',
-                                fontSize: 14
-                            }
-
-                        }]
-                    }
-            }
-
-        };
         ctx = document.getElementById("myChart").getContext("2d");
         myLineChart = new Chart(ctx, config);
         myLineChart.update();
@@ -163,40 +54,22 @@
 
 
 
-        $.ajax({
-            method: "GET",
-            url: endpoint,
-
-            success: function (data) {
-                //$("#progress").slideToggle();
 
 
-            },
-            error: function (error_data) {
-                console.log("error")
-                console.log(error_data)
-
-            }
-        });
-
-    });
-    $('#back').click(function () {
-        $('#form-stat').slideToggle();
-        $("#char").slideToggle();
     });
     /*$.ajax({
         method: "GET",
         url: endpoint,
-        
+
         success: function (data) {
-            
+
             labels = data.labels
             defaultData = data.prediction
             realData = data.real
             colors = data.color
             $("#preloader").remove()
             setChart()
-            
+
         },
         error: function (error_data) {
             console.log("error")

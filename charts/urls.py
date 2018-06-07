@@ -18,13 +18,14 @@ from django.contrib import admin
 from django.contrib.auth import views as authviews
 
 from .views import (BarChartView, Boosting, BoostingGradientView, ChartData,
-                    HomeView, StatCharView, get_data,main,manual)
+                    HomeView, StatCharView, get_data,main,manual,PlotData,PlotCharView)
 
 urlpatterns = [
     url(r'^$', main, ),
     url(r'^tsne/$', get_data, name='tsne'),
     url(r'^api/chart/$', HomeView.as_view(), name='api-data'),
     url(r'^api/chart/data/$', ChartData.as_view()),
+    url(r'^plots/api/plot/data/$', PlotData.as_view(),name='api-plot'),
     url(r'^api/boosting/data$', Boosting.as_view()),
     url(r'^boosting$', BoostingGradientView.as_view(), name='boosting'),
     url(r'^admin/', admin.site.urls),
@@ -33,6 +34,7 @@ urlpatterns = [
     url(r'^logout/$', authviews.logout,
         {'template_name': 'logged_out.html'}, name='logout'),
     url(r'^stat/$', StatCharView.as_view(), name='stat'),
+    url(r'^plots/$', PlotCharView.as_view(), name='plots'),
     url(r'^bar/$', BarChartView.as_view(), name='bar'),
     url(r'^manual/$', manual, name='manual'),
     url(r'^', include('chart.urls')),
