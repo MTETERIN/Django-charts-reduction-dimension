@@ -210,10 +210,10 @@ class BoostingGradientView(View):
                 pickle.dump(web_url, handle, protocol=pickle.HIGHEST_PROTOCOL)
             with open('filedefect.pickle', 'wb') as defe:
                 pickle.dump(defect_url, defe, protocol=pickle.HIGHEST_PROTOCOL)
+                print('algorithm:' + algorithm)
                 if (algorithm == '1'):
-                    print('zz')
                     return render(request, 'charts.html', {"groups": web_url, "defect": defect_url})
-                elif (algorithm == 2):
+                elif (algorithm == '2'):
                     return render(request, 'boosting.html', {"groups": web_url, "defect": defect_url})
                 else:
                     return render(request, 'charts-encoder.html', {"groups": web_url, "defect": defect_url})
