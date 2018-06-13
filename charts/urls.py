@@ -18,13 +18,14 @@ from django.contrib import admin
 from django.contrib.auth import views as authviews
 
 from .views import (BarChartView, Boosting, BoostingGradientView, ChartData,
-                    HomeView, StatCharView, get_data,main,manual,PlotData,PlotCharView)
+                    HomeView, StatCharView, get_data,main,manual,PlotData,PlotCharView, ChartEncoderData)
 
 urlpatterns = [
     url(r'^$', main, ),
     url(r'^tsne/$', get_data, name='tsne'),
     url(r'^api/chart/$', HomeView.as_view(), name='api-data'),
     url(r'^api/chart/data/$', ChartData.as_view()),
+    url(r'^api/chart_encoder/data/$', ChartEncoderData.as_view()),
     url(r'^plots/api/plot/data/$', PlotData.as_view(),name='api-plot'),
     url(r'^api/boosting/data$', Boosting.as_view()),
     url(r'^boosting$', BoostingGradientView.as_view(), name='boosting'),
