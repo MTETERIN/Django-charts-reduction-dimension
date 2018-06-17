@@ -11,3 +11,4 @@ six==1.11.0
 sklearn==0.0
 wincertstore==0.2
 xgboost==0.71
+keras 2.1.6

@@ -6,6 +6,8 @@ pip install pandas
 pip install scipy
 pip install xgboost
 pip install sklearn
+pip install keras
+pip install tensorflow
 
 
 
