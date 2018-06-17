@@ -9,20 +9,20 @@ var chartColors = [
 ];
 
 function randomColor() {
-		return chartColors[Math.floor(Math.random()*6)];	
+		return chartColors[Math.floor(Math.random()*6)];
 	};
 
 
-var parameters=[];
-var parameters = [
-parameters['50']="Power consumption on the meter №1 (Energieverbr._Auftr._Zaehler1)",
-parameters['51']="Power consumption on the meter №2 (Energieverbr._Auftr._Zaehler2)",
-parameters['102']="Melt pressure in extruder B (ExtB_Ist_Massedruck)",
-parameters['138']="Melt pressure in extruder С (ExtC_Ist_Massedruck)",
-parameters['145']="Melt temperature of extruder C (ExtC_IST_Temp_Massetemperatur_vor_Sieb)",
-parameters['151']="Melt temperature of zone №4 of extruder C (ExtC_IST_Temp_Zone4)",
-parameters['170']="Weight of the composition (IST_Gewicht_Komp3)",
-parameters['203']="Preliminary property (Vorabzug_Zugist)"];
+
+var parameters = {};
+parameters['50']="Power consumption on the meter №1 (Energieverbr._Auftr._Zaehler1)";
+parameters['51']="Power consumption on the meter №2 (Energieverbr._Auftr._Zaehler2)";
+parameters['102']="Melt pressure in extruder B (ExtB_Ist_Massedruck)";
+parameters['138']="Melt pressure in extruder С (ExtC_Ist_Massedruck)";
+parameters['145']="Melt temperature of extruder C (ExtC_IST_Temp_Massetemperatur_vor_Sieb)";
+parameters['151']="Melt temperature of zone №4 of extruder C (ExtC_IST_Temp_Zone4)";
+parameters['170']="Weight of the composition (IST_Gewicht_Komp3)";
+parameters['203']="Preliminary property (Vorabzug_Zugist)";
 
 function getparamNameMultiValues(paramName){
 	var sURL = window.document.URL.toString();

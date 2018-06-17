@@ -1,125 +1,231 @@
-{% extends 'base.html' %} {% load staticfiles %} {% block jquery %}
+{% extends 'base.html' %} {% block content %}
+
+<form method="GET" action="{% url 'stat' %}" id="form-stat">
+        <h4>Choose graph settings: </h3>
+    <p>
+                <label>
+                  <input type="checkbox" id="ch1" />
+                  <span>№ of Orders</span>
+                </label>
+              </p>
+              <p>
+                <label>
+                        <input type="checkbox" id="ch2" />
+                  <span>Best Rezeptur</span>
+                </label>
+              </p>
+              <p>
+                <label>
+                        <input type="checkbox" id="ch3" />
+                  <span>Best Material</span>
+                </label>
+              </p>
+
+
+</form>
+
+<div id="char" >
+
+
+    <div id='canvas-wrapper'>
+        <canvas id="myChart"  style="display:none"></canvas>
+        <canvas id="myChart2"  style="display:none"></canvas>
+        <canvas id="myChart3"  style="display:none"></canvas>
+    </div>
+
+
+    <!-- <div class="card-action ">
+        <button id="back" class="btn view-center">Back
+        </button>
+    </div> -->
+</div>
+
+
+
+
+{% endblock content %} {% block script %}
 <script>
+        function isMobileDevice() {
+            return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+        }
+    var myLineChart = null;
+    var ctx = null;
+    var arr;
+    var endpoint = '/api/chart/data/';
     var ctx = document.getElementById("myChart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Tegrant Alloyd Brands, Inc.", "Kaschierbetrieb Lange GmbH & Co. KG", "Rheno Plastiques & Papiers S. A. S.", "SPX Cooling Technologies Inc", "Brentwood Industries, Inc.", "PLANUNG", "Lager BG"],
-            datasets: [{
-                label: '# of Orders',
-                data: [6114, 5487, 2541, 2473, 2222, 2174, 2060],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Tegrant Alloyd Brands, Inc.", "Kaschierbetrieb Lange GmbH & Co. KG", "Rheno Plastiques & Papiers S. A. S.", "SPX Cooling Technologies Inc", "Brentwood Industries, Inc.", "PLANUNG", "Lager BG"],
+                datasets: [{
+                    label: '# of Orders',
+                    data: [6114, 5487, 2541, 2473, 2222, 2174, 2060],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
                 }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: !isMobileDevice(),
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            display: !isMobileDevice(),
+                        }}]
+                }
             }
-        }
-    });
-    var ctx2 = document.getElementById("myChart2").getContext('2d');
-    var myChart2 = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: ["M252/01-85/4311-A-01-170_190#",
-                "M588J02-71/9400-A-01-50_500_JPspez",
-                "M401/20-94/3100-A-01-0125_1150",
-                "M280/06-03/9301-A-03-230_270#",
-                "M153/07-05/192Z-A-03-100_150#K18,TxMB",
-                "M401C50-74/5750-A-01-0200_1020 C", "M225/05-85/3714-A-02-110_130#K40"],
-            datasets: [{
-                label: 'Best Rezeptur',
-                data: [138.4, 130.8, 126.9, 113.7, 111, 110.8, 110],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
+        });
+        var ctx2 = document.getElementById("myChart2").getContext('2d');
+        var myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ["M252/01-85/4311-A-01-170_190#",
+                    "M588J02-71/9400-A-01-50_500_JPspez",
+                    "M401/20-94/3100-A-01-0125_1150",
+                    "M280/06-03/9301-A-03-230_270#",
+                    "M153/07-05/192Z-A-03-100_150#K18,TxMB",
+                    "M401C50-74/5750-A-01-0200_1020 C", "M225/05-85/3714-A-02-110_130#K40"],
+                datasets: [{
+                    label: 'Best Rezeptur',
+                    data: [138.4, 130.8, 126.9, 113.7, 111, 110.8, 110],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
                 }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: !isMobileDevice(),
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            display: !isMobileDevice(),
+                        }}]
+                }
             }
-        }
-    });
+        });
+        var ctx3 = document.getElementById("myChart3").getContext('2d');
+        var myChart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ["V170/02-R-47-71/9400-200_500",
+                    "GR-K-1-CL-B-F-PVC----CLEAR",
+                    "GR-K-1-WH-C-T-PVC-CACO3-CC"],
+                datasets: [{
+                    label: 'Best Material',
+                    data: [297.3, 260.1, 151.7,],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: !isMobileDevice(),
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            display: !isMobileDevice(),
+                        }}],
+                        xAxes: [{
+                            ticks: {
+                                display: !isMobileDevice(),
+                            }}]
+                }
+            }
+        });
+        $('#ch1').click(function () {
+            $('#ch1').prop('checked') ? $('#myChart').fadeIn() : $('#myChart').fadeOut();
 
-    var ctx3 = document.getElementById("myChart3").getContext('2d');
-    var myChart3 = new Chart(ctx3, {
-        type: 'bar',
-        data: {
-            labels: ["V170/02-R-47-71/9400-200_500",
-                "GR-K-1-CL-B-F-PVC----CLEAR",
-                "GR-K-1-WH-C-T-PVC-CACO3-CC"],
-            datasets: [{
-                label: 'Best Material',
-                data: [297.3, 260.1, 151.7,],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-</script> {% endblock %} {% block content %}
-<script>
-    var groups = '{{groups}}'.replace(/&#39;/g, '');
-    var arr = JSON.parse(groups);
+        });
 
-</script>
-<canvas id="myChart"></canvas>
-<canvas id="myChart2"></canvas>
-<canvas id="myChart3"></canvas>
-{% endblock content %}
+        $('#ch2').click(function () {
+            $('#ch2').prop('checked') ? $('#myChart2').fadeIn() : $('#myChart2').fadeOut();
+        });
+
+        $('#ch3').click(function () {
+            $('#ch3').prop('checked') ? $('#myChart3').fadeIn() : $('#myChart3').fadeOut();
+        });
+    $('#form-stat').on('submit', function (event) {
+        event.preventDefault();
+        //$("#progress").slideToggle();
+        $('#form-stat').slideToggle();
+        $('#char').slideToggle();
+        $('#myChart').remove();
+        $("#canvas-wrapper").html("").html("<canvas id='myChart' style='display:none' ></canvas><canvas id='myChart2'  style='display:none'></canvas><canvas id='myChart3'  style='display:none'></canvas>");
+
+
+    });
+    $('#back').click(function () {
+        $('#form-stat').slideToggle();
+        $("#char").slideToggle();
+    });
+    /*$.ajax({
+        method: "GET",
+        url: endpoint,
+
+        success: function (data) {
+
+            labels = data.labels
+            defaultData = data.prediction
+            realData = data.real
+            colors = data.color
+            $("#preloader").remove()
+            setChart()
+
+        },
+        error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+        }
+    })*/
+</script> {% endblock %}

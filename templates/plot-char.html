@@ -13,7 +13,6 @@
             labels = data.labels
             defaultData = data.prediction
             realData = data.real
-            colors = data.color
             name1 = data.name1
             name2 = data.name2
             $("#preloader").remove()
@@ -39,22 +38,23 @@
                         label: name1,
                         data: defaultData,
                         backgroundColor: [
-                            'rgba(0,0,255,0.7)'
+                            '#37da7e'
                         ],
                         borderColor: [
-                            'rgba(0,0,255,0.7)'
+                            '#37da7e'
                         ],
+                        pointRadius: 0,
                         fill: false,
+                        cubicInterpolationMode: 'monotone',
                         borderWidth: 1
                     }, {
                         label: name2,
                         data: realData,
-                        backgroundColor: [
-                            'rgba(255,0,0,0.7)'
-                        ],
                         borderColor: [
-                            'rgba(255,0,0,0.7)'
+                            '#6D89D5'
                         ],
+                        pointRadius: 0,
+                        cubicInterpolationMode: 'monotone',
                         fill: false,
                         borderWidth: 1
                     }
@@ -65,11 +65,12 @@
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: 'Black dots',
+                            labelString: 'Value',
                             fontSize: 14
                         }
                     }],
                     xAxes: [{
+                      display: false,
                         scaleLabel: {
                             display: true,
                             labelString: 'Time',
@@ -86,8 +87,8 @@
 
 </script>
 
-<span class="card-title">Plost</span>
-<div url-endpoint='{% url "api-plot" %}' class='info'>Parameters Used: </div>
+<span class="card-title">Plots</span>
+<div url-endpoint='{% url "api-plot" %}' class='info'> </div>
 
 <div class="valign-wrapper" id="preloader">
     <div class="progress">

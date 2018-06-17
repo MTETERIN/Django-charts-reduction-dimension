@@ -1,7 +1,11 @@
+import tensorflow
+from keras.layers import Input, Dense
+from keras.models import Model
+from keras import backend as K
 import datetime
 import pickle
 import sqlite3 as lite
-
+import os
 import numpy as np
 import pandas as pd
 from django.contrib.auth import get_user_model
@@ -15,9 +19,7 @@ import xgboost as xgb
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from keras.layers import Input, Dense
-from keras.models import Model
-from keras import backend as K
+
 
 User = get_user_model()
 
@@ -159,7 +161,7 @@ class ChartEncoderData(APIView):
         autoencoder.fit(train_x, train_x,
                                   epochs=50,
                                   batch_size=32,
-                                  shuffle=True
+                                  shuffle=True, verbose = 0
                                   # validation_data=(train_x, train_x)
                                   )
 
@@ -281,13 +283,10 @@ class PlotData(APIView):
         predict_values, real_values,name1,name2 = self.plots()
         datas = []
         real_data = []
-        timeStamp = 0
+        data_label = []
         for i in predict_values:
-            timeStamp += 1
             point = {
-                'x': timeStamp,
                 'y': i,
-                'r': 3,
             }
             datas.append(point)
         colors = []
@@ -295,15 +294,12 @@ class PlotData(APIView):
         for i in predict_values:
             colors.append("#F34F4F")  # красные - дефект
 
-        timeStamp = 0
         for i in real_values:
-            timeStamp += 1
             point = {
-                'x': timeStamp,
                 'y': i,
-                'r': 3,
             }
             real_data.append(point)
+            data_label.append(i)
 
         qs_count = User.objects.all().count()
 
@@ -313,7 +309,7 @@ class PlotData(APIView):
             "color": colors,
             "name1":name1,
             "name2":name2,
-            "labels":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,93,94,95,96,97,98,99,100]
+            "labels": data_label
         }
         return Response(data)
 
@@ -483,7 +479,7 @@ class Boosting(APIView):
             defectParameter = cur.fetchone()[0]
         sc = MinMaxScaler(feature_range=(0, 1))
         df_data = df_query.drop([defectParameter, 'date'], axis=1)
-        xgb_model = xgb.XGBRegressor(max_depth=5, n_estimators=60)
+        xgb_model = xgb.XGBRegressor(max_depth=5, n_estimators=70)
         xgb_model.fit(df_data.values, df_query[defectParameter].values)
         print("hi")
         return xgb_model.predict(df_data.values), df_query[defectParameter].values
@@ -493,36 +489,27 @@ class Boosting(APIView):
         predict_values, real_values = self.gradient_boosting()
         datas = []
         real_data = []
+        data_label = []
         timeStamp = 0
         for i in predict_values:
             timeStamp += 1
             point = {
-                'x': timeStamp,
                 'y': i,
-                'r': 3,
             }
             datas.append(point)
-        colors = []
-
-        for i in predict_values:
-            colors.append("#F34F4F")  # красные - дефект
-
         timeStamp = 0
         for i in real_values:
             timeStamp += 1
             point = {
-                'x': timeStamp,
                 'y': i,
-                'r': 3,
             }
+            data_label.append(i)
             real_data.append(point)
 
         qs_count = User.objects.all().count()
-
         data = {
             "prediction": datas,
             "real": real_data,
-            "color": colors,
-            "labels":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,93,94,95,96,97,98,99,100]
+            "labels": data_label
         }
         return Response(data)
